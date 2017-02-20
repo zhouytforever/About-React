@@ -379,17 +379,13 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Created by yikun on 16/05/04.
-	 */
-
 	'use strict';
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -401,136 +397,97 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _localDb = __webpack_require__(8);
+	var _TodoHeader = __webpack_require__(8);
 
-	var _localDb2 = _interopRequireDefault(_localDb);
+	var _TodoHeader2 = _interopRequireDefault(_TodoHeader);
 
-	var _TodoHeaderJs = __webpack_require__(9);
+	var _TodoMain = __webpack_require__(9);
 
-	var _TodoHeaderJs2 = _interopRequireDefault(_TodoHeaderJs);
+	var _TodoMain2 = _interopRequireDefault(_TodoMain);
 
-	var _TodoMainJs = __webpack_require__(10);
+	var _TodoFooter = __webpack_require__(11);
 
-	var _TodoMainJs2 = _interopRequireDefault(_TodoMainJs);
-
-	var _TodoFooterJs = __webpack_require__(12);
-
-	var _TodoFooterJs2 = _interopRequireDefault(_TodoFooterJs);
-
-	//es6写法
+	var _TodoFooter2 = _interopRequireDefault(_TodoFooter);
 
 	var App = (function (_React$Component) {
 	    _inherits(App, _React$Component);
 
-	    //定义组件，继承父类
-
 	    function App() {
 	        _classCallCheck(this, App);
 
-	        //定义App类的构造函数
-	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this); //调用父类的构造函数
-	        this.db = new _localDb2['default']('ReactDemo');
-	        this.state = { //定义组件状态
-	            todos: this.db.get('todos') || [],
+	        _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this);
+	        this.state = {
+	            todos: [],
 	            isAllChecked: false
 	        };
 	    }
 
-	    // 判断是否所有任务的状态都完成，同步底部的全选框
-
 	    _createClass(App, [{
-	        key: 'allChecked',
-	        value: function allChecked() {
-	            var isAllChecked = false;
-	            if (this.state.todos.every(function (todo) {
-	                return todo.isDone;
-	            })) {
-	                isAllChecked = true;
-	            }
-	            // if (arr.forEach(function(todo) {return todo.isDone;} )) {
-	            //     isAllChecked = true;
-	            // }
-	            this.setState({ //改变状态，组件重绘
-	                todos: this.state.todos,
-	                isAllChecked: isAllChecked
-	            });
+	        key: 'addItem',
+	        value: function addItem(todo) {
+	            this.state.todos.push(todo);
+	            this.checkAllDone();
 	        }
-
-	        // 添加任务，是传递给Header组件的方法
 	    }, {
-	        key: 'addTodo',
-	        value: function addTodo(todoItem) {
-	            this.state.todos.push(todoItem); //todo列表
-	            this.db.set('todos', this.state.todos);
-	            this.allChecked();
+	        key: 'checkAllDone',
+	        value: function checkAllDone() {
+	            this.setState({
+	                todos: this.state.todos,
+	                isAllChecked: this.state.todos.every(function (item) {
+	                    return item.isDone;
+	                }) });
 	        }
-
-	        // 删除当前的任务，传递给TodoItem的方法
+	    }, {
+	        key: 'changeTodoState',
+	        value: function changeTodoState(index, isDone, isAll) {
+	            debugger;
+	            if (isAll) {
+	                this.setState({
+	                    todos: this.state.todos.map(function (item) {
+	                        item.isDone = isDone;
+	                        return item;
+	                    }),
+	                    isAllChecked: isDone });
+	            } else {
+	                var todos = this.state.todos;
+	                todos[index].isDone = isDone;
+	                this.setState({
+	                    todos: todos,
+	                    isAllChecked: this.checkAllDone()
+	                });
+	            }
+	        }
 	    }, {
 	        key: 'deleteTodo',
 	        value: function deleteTodo(index) {
 	            this.state.todos.splice(index, 1);
-	            this.setState({ todos: this.state.todos }); //改变状态
-	            this.db.set('todos', this.state.todos);
+	            this.checkAllDone();
 	        }
-
-	        // 清除已完成的任务，传递给Footer组件的方法
 	    }, {
 	        key: 'clearDone',
 	        value: function clearDone() {
-	            var todos = this.state.todos.filter(function (todo) {
-	                return !todo.isDone;
-	            }); //过滤掉数组中todo.isDone为true的item。
-	            // var todos = arr.filter(function(todo) {
-	            //     return !todo.isDone;
-	            // });
-	            this.setState({
-	                todos: todos,
-	                isAllChecked: false
+	            var todos = this.state.todos.filter(function (item) {
+	                return !item.isDone;
 	            });
-	            this.db.set('todos', todos);
+	            this.setState({ todos: todos, isAllChecked: false });
 	        }
-
-	        // 改变任务状态，传递给TodoItem和Footer组件的方法
-	    }, {
-	        key: 'changeTodoState',
-	        value: function changeTodoState(index, isDone) {
-	            var isChangeAll = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
-	            //初始化isChangeAll为false
-	            if (isChangeAll) {
-	                //全部操作
-	                this.setState({
-	                    todos: this.state.todos.map(function (todo) {
-	                        todo.isDone = isDone;
-	                        return todo;
-	                    }),
-	                    isAllChecked: isDone
-	                });
-	            } else {
-	                //操作其中一个todo
-	                this.state.todos[index].isDone = isDone;
-	                this.allChecked();
-	            }
-	            this.db.set('todos', this.state.todos);
-	        }
-
-	        //组件渲染方法
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var info = {
+	                todoCount: this.state.todos.length,
 	                isAllChecked: this.state.isAllChecked,
-	                todoCount: this.state.todos.length || 0,
-	                todoDoneCount: (this.state.todos && this.state.todos.filter(function (todo) {
-	                    return todo.isDone;
-	                })).length || 0
+	                todoDoneCount: this.state.todos.reduce(function (all, todo) {
+	                    return all + todo.isDone;
+	                }, 0)
 	            };
+
 	            return _react2['default'].createElement(
 	                'div',
 	                { className: 'todo-wrap' },
-	                _react2['default'].createElement(_TodoHeaderJs2['default'], { addTodo: this.addTodo.bind(this) }),
-	                _react2['default'].createElement(_TodoMainJs2['default'], { todos: this.state.todos, deleteTodo: this.deleteTodo.bind(this), changeTodoState: this.changeTodoState.bind(this) }),
-	                _react2['default'].createElement(_TodoFooterJs2['default'], _extends({}, info, { changeTodoState: this.changeTodoState.bind(this), clearDone: this.clearDone.bind(this) }))
+	                _react2['default'].createElement(_TodoHeader2['default'], { addItem: this.addItem.bind(this) }),
+	                _react2['default'].createElement(_TodoMain2['default'], { changeTodoState: this.changeTodoState.bind(this), deleteTodo: this.deleteTodo.bind(this), todos: this.state.todos }),
+	                _react2['default'].createElement(_TodoFooter2['default'], _extends({}, info, { changeTodoState: this.changeTodoState.bind(this), clearDone: this.clearDone.bind(this) }))
 	            );
 	        }
 	    }]);
@@ -540,15 +497,6 @@
 
 	_react2['default'].render(_react2['default'].createElement(App, null), document.getElementById('app'));
 
-	// var Hello = React.createClass({
-	//     render: function() {
-	//         return <div className = {this.props.className}> hello, {this.props.name}</div>;
-	//     }
-	// });
-	//
-	//
-	// React.render( < Hello name = 'jarson' className = 'text-danger' /> , document.getElementById('app'));
-
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
@@ -557,105 +505,6 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
-
-	/**
-	 * Created by YikaJ on 15/6/10.
-	 */
-	'use strict';
-
-	var _createClass = (function () {
-	    function defineProperties(target, props) {
-	        for (var i = 0; i < props.length; i++) {
-	            var descriptor = props[i];
-	            descriptor.enumerable = descriptor.enumerable || false;
-	            descriptor.configurable = true;
-	            if ('value' in descriptor) descriptor.writable = true;
-	            Object.defineProperty(target, descriptor.key, descriptor);
-	        }
-	    }
-
-	    return function (Constructor, protoProps, staticProps) {
-	        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	        if (staticProps) defineProperties(Constructor, staticProps);
-	        return Constructor;
-	    };
-	})();
-
-	function _classCallCheck(instance, Constructor) {
-	    if (!(instance instanceof Constructor)) {
-	        throw new TypeError('Cannot call a class as a function');
-	    }
-	}
-
-	var LocalDb = (function () {
-	    function LocalDb() {
-	        var localDb = arguments[0] === undefined ? 'localDb' :arguments[0];
-
-	        _classCallCheck(this, LocalDb);
-
-	        if (!window.localStorage) {
-	            throw new Error('Not supports localStorage');
-	        }
-	        this.localDb = localDb;
-
-	        if (localStorage[localDb]) {
-	            this.db = JSON.parse(localStorage[localDb]);
-	        } else {
-	            this.db = {};
-	        }
-	    }
-
-	    _createClass(LocalDb, [{
-	        key: 'getDb',
-	        value: function getDb() {
-	            return this.db;
-	        }
-	    }, {
-	        key: 'set',
-	        value: function set(key, value) {
-	            if (key) {
-	                this.db[key] = value;
-
-	                return this._saveToLocalStorage();
-	            }
-
-	            throw new Error('set参数key不能为空');
-	        }
-	    }, {
-	        key: 'get',
-	        value: function get(key) {
-	            if (key) {
-	                var value = this.db[key];
-	                if (typeof value === 'undefined') {
-	                    console.warn(key + '的值不存在');
-	                }
-	                return value;
-	            }
-
-	            throw new Error('get参数key不能为空');
-	        }
-	    }, {
-	        key: 'clean',
-	        value: function clean() {
-	            this.db = {};
-	            this._saveToLocalStorage();
-	        }
-	    }, {
-	        key: '_saveToLocalStorage',
-	        value: function _saveToLocalStorage() {
-	            localStorage[this.localDb] = JSON.stringify(this.getDb());
-	        }
-	    }]);
-
-	    return LocalDb;
-	})();
-
-	module.exports = LocalDb;
-
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -692,22 +541,16 @@
 	    }
 
 	    _createClass(TodoHeader, [{
-	        key: 'handlerKeyUp',
-
-	        // 绑定键盘回车事件，添加新任务
-	        value: function handlerKeyUp(e) {
-	            if (e.keyCode == 13) {
-	                var value = e.target.value;
-
-	                if (!value) return false;
-
-	                var newTodoItem = {
+	        key: 'handleKeyUp',
+	        value: function handleKeyUp(e) {
+	            var value = e.target.value;
+	            if (e.keyCode == 13 && value != null && "" != value) {
+	                var item = {
 	                    text: value,
 	                    isDone: false
 	                };
-
-	                e.target.value = '';
-	                this.props.addTodo(newTodoItem); //使用props调用App组件传过来的方法。
+	                e.target.value = null;
+	                this.props.addItem(item);
 	            }
 	        }
 	    }, {
@@ -716,7 +559,7 @@
 	            return _react2['default'].createElement(
 	                'div',
 	                { className: 'todo-header' },
-	                _react2['default'].createElement('input', { onKeyUp: this.handlerKeyUp.bind(this), type: 'text', placeholder: '请输入你的任务名称，按回车键确认' })
+	                _react2['default'].createElement('input', { onKeyUp: this.handleKeyUp.bind(this), placeholder: '请输入待办事项，回车完成' })
 	            );
 	        }
 	    }]);
@@ -728,14 +571,11 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Created by yikun on 16/05/06.
-	 */
-
 	'use strict';
+
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
@@ -756,7 +596,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _TodoItemJs = __webpack_require__(11);
+	var _TodoItemJs = __webpack_require__(10);
 
 	var _TodoItemJs2 = _interopRequireDefault(_TodoItemJs);
 
@@ -778,15 +618,14 @@
 	                return _react2['default'].createElement(
 	                    'div',
 	                    { className: 'todo-empty' },
-	                    '恭喜您，目前没有待办任务！'
+	                    '没有待办事项'
 	                );
 	            } else {
 	                return _react2['default'].createElement(
 	                    'ul',
 	                    { className: 'todo-main' },
 	                    this.props.todos.map(function (todo, index) {
-	                        //{...this.props} 用来传递TodoMain的todos属性和delete、change方法。
-	                        return _react2['default'].createElement(_TodoItemJs2['default'], _extends({ text: todo.text, isDone: todo.isDone, index: index }, _this.props));
+	                        return _react2['default'].createElement(_TodoItemJs2['default'], _extends({ text: todo.text, index: index }, _this.props, { isDone: todo.isDone }));
 	                    })
 	                );
 	            }
@@ -800,7 +639,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -837,32 +676,26 @@
 	    }
 
 	    _createClass(TodoItem, [{
-	        key: 'handlerChange',
-
-	        //改变任务是否已完成的状态
-	        value: function handlerChange() {
-	            var isDone = !this.props.isDone;
-	            this.props.changeTodoState(this.props.index, isDone);
-	        }
-
-	        // 鼠标移入事件
-	    }, {
-	        key: 'handlerMouseOver',
-	        value: function handlerMouseOver() {
-	            _react2['default'].findDOMNode(this).style.background = '#eee';
-	            _react2['default'].findDOMNode(this.refs.delButton).style.display = 'inline-block';
+	        key: 'handleChange',
+	        value: function handleChange(e) {
+	            var isDone = this.props.isDone;
+	            this.props.changeTodoState(this.props.index, !isDone);
 	        }
 	    }, {
-	        key: 'handlerMouseOut',
-	        value: function handlerMouseOut() {
-	            _react2['default'].findDOMNode(this).style.background = '#fff';
-	            _react2['default'].findDOMNode(this.refs.delButton).style.display = 'none';
+	        key: 'handleMouseOver',
+	        value: function handleMouseOver(e) {
+	            _react2['default'].findDOMNode(this).style.background = "#aaa";
+	            _react2['default'].findDOMNode(this.refs.delButton).style.display = "inline-block";
 	        }
-
-	        // 删除当前任务
 	    }, {
-	        key: 'handlerDelete',
-	        value: function handlerDelete() {
+	        key: 'handleMouseOut',
+	        value: function handleMouseOut(e) {
+	            _react2['default'].findDOMNode(this).style.background = "#fff";
+	            _react2['default'].findDOMNode(this.refs.delButton).style.display = "none";
+	        }
+	    }, {
+	        key: 'deleteTodoItem',
+	        value: function deleteTodoItem(e) {
 	            this.props.deleteTodo(this.props.index);
 	        }
 	    }, {
@@ -871,11 +704,11 @@
 	            var className = this.props.isDone ? 'task-done' : '';
 	            return _react2['default'].createElement(
 	                'li',
-	                { onMouseOver: this.handlerMouseOver.bind(this), onMouseOut: this.handlerMouseOut.bind(this) },
+	                { onMouseOver: this.handleMouseOver.bind(this), onMouseOut: this.handleMouseOut.bind(this) },
 	                _react2['default'].createElement(
 	                    'label',
 	                    null,
-	                    _react2['default'].createElement('input', { type: 'checkbox', checked: this.props.isDone, onChange: this.handlerChange.bind(this) }),
+	                    _react2['default'].createElement('input', { type: 'checkbox', checked: this.props.isDone, onChange: this.handleChange.bind(this) }),
 	                    _react2['default'].createElement(
 	                        'span',
 	                        { className: className },
@@ -884,7 +717,7 @@
 	                ),
 	                _react2['default'].createElement(
 	                    'button',
-	                    { ref: 'delButton', className: 'btn btn-danger', onClick: this.handlerDelete.bind(this) },
+	                    { onClick: this.deleteTodoItem.bind(this), className: 'btn btn-danger', ref: 'delButton' },
 	                    '删除'
 	                )
 	            );
@@ -898,15 +731,11 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	/**
-	 * Created by yikun on 16/05/06.
-	 */
-
 	'use strict';
+
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
@@ -935,18 +764,14 @@
 	    }
 
 	    _createClass(TodoFooter, [{
-	        key: 'handlerSelectAll',
-
-	        //改变任务是否已完成的状态
-	        value: function handlerSelectAll(e) {
-	            this.props.changeTodoState(null, e.target.checked, true); // true表示全部操作。
-	        }
-
-	        //删除全部已完成的任务
-	    }, {
-	        key: 'handlerDeleteDone',
-	        value: function handlerDeleteDone() {
+	        key: 'handleDeleteClick',
+	        value: function handleDeleteClick(e) {
 	            this.props.clearDone();
+	        }
+	    }, {
+	        key: 'handleChangeAll',
+	        value: function handleChangeAll(e) {
+	            this.props.changeTodoState(null, e.target.checked, true);
 	        }
 	    }, {
 	        key: 'render',
@@ -957,8 +782,7 @@
 	                _react2['default'].createElement(
 	                    'label',
 	                    null,
-	                    _react2['default'].createElement('input', { type: 'checkbox', checked: this.props.isAllChecked, onChange: this.handlerSelectAll.bind(this) }),
-	                    '全选'
+	                    _react2['default'].createElement('input', { type: 'checkbox', checked: this.props.isAllChecked, onChange: this.handleChangeAll.bind(this) })
 	                ),
 	                _react2['default'].createElement(
 	                    'span',
@@ -966,16 +790,16 @@
 	                    _react2['default'].createElement(
 	                        'span',
 	                        { className: 'text-success' },
-	                        '已完成',
+	                        '已经完成',
 	                        this.props.todoDoneCount
 	                    ),
-	                    ' / 全部',
+	                    '/ 总共',
 	                    this.props.todoCount
 	                ),
 	                _react2['default'].createElement(
 	                    'button',
-	                    { className: 'btn btn-danger', onClick: this.handlerDeleteDone.bind(this) },
-	                    '清除已完成任务'
+	                    { onClick: this.handleDeleteClick.bind(this), className: 'btn btn-danger' },
+	                    '删除全部完成事项'
 	                )
 	            );
 	        }
